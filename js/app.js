@@ -89,13 +89,15 @@
   function renderQuestion() {
     const q = QUESTIONS[questionIndex];
     if (!q || !els.quizText || !els.quizOptions) return;
-    els.quizText.textContent = q.text;
+    const qText = q.text ?? q.question ?? "";
+    els.quizText.textContent = qText;
     els.quizOptions.innerHTML = "";
     q.options.forEach((opt, idx) => {
+      const label = opt.label ?? opt.text ?? "";
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "option-btn";
-      btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt.label}`;
+      btn.textContent = `${String.fromCharCode(65 + idx)}. ${label}`;
       btn.addEventListener("click", () => onPickOption(opt));
       els.quizOptions.appendChild(btn);
     });
@@ -152,7 +154,13 @@
     const pct = matchPercentFor(winnerId);
     if (els.resultPortrait) {
       els.resultPortrait.style.background = c.cardGradient;
-      els.resultPortrait.classList.toggle("ssr-card__portrait--dark", c.id === "yurika");
+      els.resultPortrait.classList.toggle(
+        "ssr-card__portrait--dark",
+        c.id === "yurika"
+      );
+      els.resultPortrait.innerHTML = `
+        <img src="${c.image}" alt="${c.name}">
+      `;
     }
     if (els.resultInitial) els.resultInitial.textContent = c.initial;
     if (els.resultName) els.resultName.textContent = c.name;
